@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CSV Gesture Classifier</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; text-align: center; }
+    input, button { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>🧠 Upload CSV for Gesture Prediction</h1>
+  <input type="file" id="csvInput" accept=".csv" />
+  <br />
+  <button onclick="uploadCSV()">📤 Predict</button>
+  <pre id="output"></pre>
+
+  <script>
+    async function uploadCSV() {
+      const fileInput = document.getElementById("csvInput");
+      const file = fileInput.files[0];
+      if (!file) return alert("Please select a CSV file");
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const res = await fetch("https://flask-tester-cx5v.onrender.com/predict", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await res.json();
+        document.getElementById("output").textContent = JSON.stringify(result, null, 2);
+      } catch (err) {
+        document.getElementById("output").textContent = "❌ Request failed:\n" + err;
+      }
+    }
+  </script>
+</body>
+</html>
